@@ -64,20 +64,56 @@ from huggingface_hub import InferenceClient
 _hf_hub_client = None
 
 
-def _get_hf_hub_client():
+def _get_hf_hub_client(model=None):
     """Singleton HuggingFace Hub client."""
     global _hf_hub_client
-    if _hf_hub_client is None:
-        model = os.getenv("HF_HUB_MODEL", "bigscience/bloom-560m")
+    if _hf_hub_client is None or model is not None:
+        model = model or os.getenv("HF_HUB_MODEL", "google/flan-t5-small")
         token = os.getenv("HF_API_KEY")
         _hf_hub_client = InferenceClient(model=model, token=token)
     return _hf_hub_client
 
 
 def _hf_hub_complete(prompt: str) -> str:
-    client = _get_hf_hub_client()
-    result = client.text_generation(prompt, max_new_tokens=200)
-    return result
+    model = os.getenv("HF_HUB_MODEL", "google/flan-t5-small")
+    hf_token = os.getenv("HF_API_KEY")
+
+    client = _get_hf_hub_client(model=model)
+
+    print(f">>> Sending prompt to Hugging Face Hub model: {model}")
+
+    try:
+        response = client.text_generation(
+            prompt,
+            max_new_tokens=200,
+            do_sample=True,
+            temperature=0.7,
+        )
+
+        if isinstance(response, str):
+            return response.strip()
+        elif isinstance(response, dict):
+            return response.get("generated_text", "").strip()
+        else:
+            return "[HF Hub Error: Unexpected response type]"
+
+    except Exception as e:
+        print(f"[HF Hub Error on model {model}: {str(e)}]")
+
+        # 🔄 Fallback to a safe default
+        fallback_model = "google/flan-t5-small"
+        print(f">>> Falling back to Hugging Face Hub model: {fallback_model}")
+        try:
+            fallback_client = _get_hf_hub_client(model=fallback_model)
+            response = fallback_client.text_generation(
+                prompt,
+                max_new_tokens=200,
+                do_sample=True,
+                temperature=0.7,
+            )
+            return response.strip() if isinstance(response, str) else response.get("generated_text", "")
+        except Exception as e2:
+            return f"[HF Hub Fallback Error: {str(e2)}]"
 
 
 # ======================================================
