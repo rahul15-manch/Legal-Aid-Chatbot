@@ -9,6 +9,6 @@ openai
 langdetect
 dotenv
 bs4
-
+pdfplumber
 
 
