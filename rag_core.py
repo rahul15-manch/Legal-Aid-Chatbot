@@ -1,45 +1,73 @@
-import os, json, pathlib
-from dataclasses import dataclass
-from typing import List, Tuple
-from dotenv import load_dotenv
-import faiss
-import numpy as np
-from sentence_transformers import SentenceTransformer
+"""
+Core RAG Pipeline (Updated)
+Author: Rahul Manchanda
+"""
 
-load_dotenv()
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
+from langchain.chains import RetrievalQA
 
-EMBED_MODEL = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
-TOP_K = int(os.getenv("TOP_K", 4))
+# ---------------------------
+# Configuration
+# ---------------------------
+MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
+INDEX_DIR = "data/index"
 
-@dataclass
-class Chunk:
-    text: str
-    meta: dict
+# ---------------------------
+# Load Embeddings + Vectorstore
+# ---------------------------
+embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME)
 
-class VectorStore:
-    def __init__(self, index_dir: str):
-        self.index_dir = pathlib.Path(index_dir)
-        self.index_dir.mkdir(parents=True, exist_ok=True)
-        self.index_path = self.index_dir / "faiss.index"
-        self.meta_path = self.index_dir / "meta.jsonl"
-        self.model = SentenceTransformer(EMBED_MODEL)
-        self.index = None
-        self.metas: List[dict] = []
-        self._load()
+vectorstore = FAISS.load_local(
+    INDEX_DIR,
+    embeddings=embedding,
+    allow_dangerous_deserialization=True
+)
 
-    def _load(self):
-        if self.index_path.exists() and self.meta_path.exists():
-            self.index = faiss.read_index(str(self.index_path))
-            with open(self.meta_path, "r", encoding="utf-8") as f:
-                self.metas = [json.loads(line) for line in f]
+retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-    def search(self, query: str, k: int = TOP_K) -> List[Chunk]:
-        if self.index is None:
-            raise RuntimeError("Index not found. Run scripts/ingest.py first.")
-        q_emb = self.model.encode([query])
-        D, I = self.index.search(np.array(q_emb, dtype="float32"), k)
-        chunks = []
-        for idx in I[0]:
-            meta = self.metas[idx]
-            chunks.append(Chunk(text=meta["text"], meta=meta))
-        return chunks
+# ---------------------------
+# LLM Setup
+# ---------------------------
+llm = ChatOllama(model="llama3", temperature=0)
+
+# ---------------------------
+# RAG Chain
+# ---------------------------
+prompt_template = ChatPromptTemplate.from_template("""
+You are a legal assistant for Indian citizens.
+Use the following retrieved documents to answer the question.
+If the answer is not in the documents, say "I don’t know based on the available legal documents."
+
+Context:
+{context}
+
+Question:
+{question}
+
+Answer as a helpful legal advisor:
+""")
+
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=retriever,
+    chain_type="stuff",
+    chain_type_kwargs={"prompt": prompt_template}
+)
+
+# ---------------------------
+# Query Function
+# ---------------------------
+def query_bot(question: str) -> str:
+    response = qa_chain.invoke({"query": question})
+    return response["result"]
+
+# ---------------------------
+# Test Run
+# ---------------------------
+if __name__ == "__main__":
+    test_q = "What are the rights of a tenant under Indian law?"
+    print(">> Querying bot...")
+    print(query_bot(test_q))

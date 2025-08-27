@@ -1,71 +1,59 @@
+"""
+Ingestion Script
+Author: Rahul Manchanda
+"""
+
 import os
 import glob
 from pathlib import Path
-from sentence_transformers import SentenceTransformer
-import faiss
-import pickle
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.docstore.document import Document
 
 # ---------------------------
 # Configuration
 # ---------------------------
 RAW_DIR = "data/raw"
 INDEX_DIR = "data/index"
-EMBEDDING_MODEL = "all-mpnet-base-v2"  # stronger legal semantic model
-CHUNK_SIZE = 800  # number of words per chunk
+MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 
 os.makedirs(INDEX_DIR, exist_ok=True)
 
 # ---------------------------
-# Helper Functions
-# ---------------------------
-def read_txt(txt_path):
-    with open(txt_path, "r", encoding="utf-8", errors="ignore") as f:
-        return f.read()
-
-def chunk_text(text, chunk_size=CHUNK_SIZE):
-    words = text.split()
-    return [" ".join(words[i:i+chunk_size]) for i in range(0, len(words), chunk_size)]
-
-# ---------------------------
-# Collect All TXT Files Only
+# Collect TXT Files
 # ---------------------------
 all_files = glob.glob(f"{RAW_DIR}/**/*.txt", recursive=True)
 print(f"Found {len(all_files)} TXT files to process.")
 
 # ---------------------------
-# Initialize Embedding Model
+# Load and Chunk Documents
 # ---------------------------
-embedder = SentenceTransformer(EMBEDDING_MODEL)
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=800,
+    chunk_overlap=100,
+    length_function=len
+)
 
-# ---------------------------
-# Process Files & Create Chunks
-# ---------------------------
-all_chunks = []
-metadata = []
-
+docs = []
 for file_path in all_files:
-    text = read_txt(file_path)
-    chunks = chunk_text(text)
-    all_chunks.extend(chunks)
-    metadata.extend([{"source": file_path}] * len(chunks))
+    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+        text = f.read()
+    chunks = text_splitter.split_text(text)
+    docs.extend([Document(page_content=chunk, metadata={"source": file_path}) for chunk in chunks])
 
-print(f"Created {len(all_chunks)} chunks.")
+print(f"Created {len(docs)} document chunks.")
 
 # ---------------------------
-# Generate Embeddings
+# Embeddings
 # ---------------------------
-embeddings = embedder.encode(all_chunks, show_progress_bar=True, convert_to_numpy=True)
+embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME)
 
 # ---------------------------
 # Build FAISS Index
 # ---------------------------
-dimension = embeddings.shape[1]
-index = faiss.IndexFlatL2(dimension)
-index.add(embeddings)
+vectorstore = FAISS.from_documents(docs, embedding)
+vectorstore.save_local(INDEX_DIR)
 
-# Save index and metadata
-faiss.write_index(index, f"{INDEX_DIR}/faiss_index.bin")
-with open(f"{INDEX_DIR}/metadata.pkl", "wb") as f:
-    pickle.dump(metadata, f)
+print("✅ FAISS index and metadata saved successfully at:", INDEX_DIR)
 
-print("FAISS index and metadata saved successfully.")

@@ -10,5 +10,12 @@ langdetect
 dotenv
 bs4
 pdfplumber
+langchain
+langchain-community
+langchain-huggingface
+langchain_ollama
+langchain_openai
+Scikit-learn
+
 
 

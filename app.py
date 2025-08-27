@@ -1,70 +1,48 @@
-# llm_providers.py
-"""
-LLM Providers - Ollama only backend
-Author: Rahul Manchanda
-"""
-
-import subprocess
 import streamlit as st
+from langchain_community.chat_models import ChatOllama  # or ChatOpenAI, ChatGroq
 
-# Default Ollama model
-OLLAMA_MODEL = "llama3"
+# ---------- Page Setup ----------
+st.set_page_config(page_title="Legal Aid Chatbot", layout="wide")
 
+# ---------- Session State for History ----------
+if "history" not in st.session_state:
+    st.session_state.history = []
 
-def _ollama_complete(prompt: str, model: str = OLLAMA_MODEL) -> str:
-    """
-    Calls Ollama locally using subprocess and returns the model response.
-    """
-    try:
-        result = subprocess.run(
-            ["ollama", "run", model, prompt],
-            capture_output=True,
-            text=True,
-        )
+# ---------- Sidebar (History) ----------
+with st.sidebar:
+    st.title("📜 Chat History")
+    if st.session_state.history:
+        for i, chat in enumerate(st.session_state.history, 1):
+            with st.expander(f"Chat {i}"):
+                st.markdown(f"**🧑 You:** {chat['question']}")
+                st.markdown(f"**🤖 Bot:** {chat['answer']}")
+    else:
+        st.info("No history yet. Ask something!")
 
-        if result.returncode == 0:
-            return result.stdout.strip()
-        else:
-            return f"[Ollama Error: {result.stderr}]"
+# ---------- Main Chat UI ----------
+st.title("⚖️ Legal Aid Chatbot")
 
-    except Exception as e:
-        return f"[Ollama Exception: {str(e)}]"
+# Define LLM
+llm = ChatOllama(model="llama3", streaming=True)
 
+# Input area
+query = st.chat_input("Ask a legal question...")
 
-def llm_complete(prompt: str) -> str:
-    """
-    Main function to send a prompt to Ollama and get the response.
-    """
-    return _ollama_complete(prompt)
+if query:
+    # Show user query
+    with st.chat_message("user"):
+        st.markdown(query)
 
+    # Placeholder for bot response
+    with st.chat_message("assistant"):
+        placeholder = st.empty()
+        full_response = ""
 
-# Example Streamlit UI
-def run_streamlit_chat():
-    st.title("💬 Legal Aid Chatbot (Ollama Powered)")
+        # Streaming response
+        for chunk in llm.stream(query):
+            token = chunk.content if chunk.content else ""
+            full_response += token
+            placeholder.markdown(full_response)
 
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-
-    user_input = st.chat_input("Ask me anything about legal aid...")
-
-    if user_input:
-        # Append user input to chat history
-        st.session_state.chat_history.append(("user", user_input))
-
-        # Get Ollama response
-        with st.spinner("Thinking..."):
-            response = llm_complete(user_input)
-
-        # Append response
-        st.session_state.chat_history.append(("bot", response))
-
-    # Display chat history
-    for role, msg in st.session_state.chat_history:
-        if role == "user":
-            st.chat_message("user").write(msg)
-        else:
-            st.chat_message("assistant").write(msg)
-
-
-if __name__ == "__main__":
-    run_streamlit_chat()
+    # Save to history
+    st.session_state.history.append({"question": query, "answer": full_response})
