@@ -23,7 +23,7 @@ with st.sidebar:
 st.title("⚖️ Legal Aid Chatbot")
 
 # Define LLM
-llm = ChatOllama(model="llama3", streaming=True)
+llm = ChatOllama(model="llama3")
 
 # Input area
 query = st.chat_input("Ask a legal question...")
