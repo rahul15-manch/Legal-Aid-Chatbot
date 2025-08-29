@@ -16,6 +16,7 @@ langchain-huggingface
 langchain_ollama
 langchain_openai
 Scikit-learn
+streamlit_mic_recorder 
 
 
 
