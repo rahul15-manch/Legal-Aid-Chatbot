@@ -19,6 +19,8 @@ Scikit-learn
 streamlit_mic_recorder 
 streamlit_option_menu
 fpdf
-
+PyPDF2
+python-docx
+docx2txt
 
 

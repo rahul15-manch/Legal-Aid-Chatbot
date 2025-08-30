@@ -4,7 +4,7 @@ from langchain_community.chat_models import ChatOllama
 from streamlit_mic_recorder import speech_to_text
 
 def show_chatbot():
-    st.title("⚖️ Legal Aid Chatbot")
+    st.title("⚖️ Legisense → intelligent, sensible advice")
 
     # Initialize LLM
     llm = ChatOllama(model="llama3")

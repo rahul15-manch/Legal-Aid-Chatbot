@@ -2,20 +2,20 @@
 import streamlit as st
 
 def show_home():
-    st.title("⚖️ Legal Aid Advisor")
+    st.title("⚖️ Legisense")
     
     st.write("""
-    Welcome to the **Legal Aid Advisor** platform!  
+    Welcome to the **Legisense** platform!  
 
     This platform helps you:
     - Generate legal documents like **Affidavits**, **RTI Applications**, and **Customer Dispute Letters**.
     - Ask legal questions through our **interactive chatbot**.
-    - Access tools easily through the **sidebar navigation**.
+    - Access tools easily through the **topbar navigation**.
     """)
     
     st.subheader("Getting Started")
     st.write("""
-    1. Use the sidebar on the left to navigate between tools.
+    1. Use the topbar in the center to navigate between tools.
     2. Fill out the forms on each page to generate legal documents.
     3. Download your generated PDF and submit/sign as required.
     4. Chat with the chatbot for guidance or clarifications on legal processes.
