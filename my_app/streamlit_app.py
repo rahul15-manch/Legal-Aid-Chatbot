@@ -1,6 +1,11 @@
 # streamlit_app.py
 import streamlit as st
 from streamlit_option_menu import option_menu
+st.set_page_config(
+    page_title="⚖️ Legal Aid Advisor - LegiSense",
+    layout="wide",
+    initial_sidebar_state="auto"
+)
 
 # Add pages folder to path
 import sys, os
@@ -13,14 +18,11 @@ import legal_affidavit
 import legal_rti
 import legal_dispute
 import summarizer
-import legal_lawyers   # 👈 NEW PAGE ADDED
+import register_lawyer
+import find_lawyer
 
-# Page config
-st.set_page_config(
-    page_title="⚖️ Legal Aid Advisor - LegiSense",
-    layout="wide",
-    initial_sidebar_state="auto"
-)
+
+
 
 # ---------- Top Navigation ----------
 selected = option_menu(
@@ -31,7 +33,7 @@ selected = option_menu(
         "Affidavit Generator",
         "RTI & Customer Dispute",
         "Legal Summarizer",
-        "Find Lawyers"   # 👈 NEW MENU OPTION
+        "Register/Find Lawyers"   # 👈 NEW MENU OPTION
     ],
     icons=[
         "house",
@@ -66,5 +68,9 @@ elif selected == "RTI & Customer Dispute":
 elif selected == "Legal Summarizer":
     summarizer.show_legal_summarizer()
 
-elif selected == "Find Lawyers":   # 👈 NEW PAGE CALL
-    legal_lawyers.show_lawyers_page()
+elif selected == "Register/Find Lawyers":
+    tab = st.radio("📌 Choose :", ["Register", "Search"])
+    if tab == "Register":
+        register_lawyer.show_register_lawyer()   # ✅ fixed
+    else:
+        find_lawyer.show_find_lawyer()           # ✅ fixed
