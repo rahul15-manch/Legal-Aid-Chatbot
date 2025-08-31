@@ -13,6 +13,7 @@ import legal_affidavit
 import legal_rti
 import legal_dispute
 import summarizer
+import legal_lawyers   # 👈 NEW PAGE ADDED
 
 # Page config
 st.set_page_config(
@@ -24,8 +25,22 @@ st.set_page_config(
 # ---------- Top Navigation ----------
 selected = option_menu(
     menu_title=None,  # no title
-    options=["Home", "Chatbot", "Affidavit Generator", "RTI & Customer Dispute", "Legal Summarizer"],
-    icons=["house", "robot", "file-text", "file-earmark-text", "book-open"],
+    options=[
+        "Home",
+        "Chatbot",
+        "Affidavit Generator",
+        "RTI & Customer Dispute",
+        "Legal Summarizer",
+        "Find Lawyers"   # 👈 NEW MENU OPTION
+    ],
+    icons=[
+        "house",
+        "robot",
+        "file-text",
+        "file-earmark-text",
+        "book-open",
+        "people-fill"   # 👈 Bootstrap icon for lawyers
+    ],
     menu_icon="cast",
     default_index=0,
     orientation="horizontal"
@@ -50,3 +65,6 @@ elif selected == "RTI & Customer Dispute":
 
 elif selected == "Legal Summarizer":
     summarizer.show_legal_summarizer()
+
+elif selected == "Find Lawyers":   # 👈 NEW PAGE CALL
+    legal_lawyers.show_lawyers_page()

@@ -22,5 +22,6 @@ fpdf
 PyPDF2
 python-docx
 docx2txt
+sqlalchemy
 
 
