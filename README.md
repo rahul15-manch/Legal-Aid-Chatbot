@@ -94,10 +94,10 @@ Meet the amazing team behind **LegiSense** 🚀
 
 | Name            | Role                          | LinkedIn |
 |-----------------|-------------------------------|----------|
+| Kashish Rana    | App Deployment                | [![LinkedIn](https://img.shields.io/badge/-Connect-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kashish-rana-6116691b5/) |
 | Rahul Manchanda | Backend & Model Training      | [![LinkedIn](https://img.shields.io/badge/-Connect-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/rahul-manchanda-3959b120a/) |
 | Tanishka Mukhi  | Data Preprocessing & Collection | [![LinkedIn](https://img.shields.io/badge/-Connect-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/tanishka-mukhi09/) |
-| Aadishri Abrol  | UI/UX & Legal Research        | [![LinkedIn](https://img.shields.io/badge/-Connect-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aadishri-abrol-796b04295/) |
-| Kashish Rana    | App Deployment                | [![LinkedIn](https://img.shields.io/badge/-Connect-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kashish-rana-6116691b5/) |
+
 
 ---
 
