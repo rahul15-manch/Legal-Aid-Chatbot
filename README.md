@@ -1,4 +1,6 @@
 # ⚖️ LegiSense – AI-Powered Legal Aid Advisor  
+![FAQ Animation](https://raw.githubusercontent.com/rahul15-manch/Legal-Aid-Chatbot/refs/heads/main/Yellow%20Green%20and%20Pink%20Colorful%20Faq%20Animated%20Social%20Media.gif)
+
 
 ## 🚀 Tech Stack
 
