@@ -1,4 +1,9 @@
 # ⚖️ LegiSense – AI-Powered Legal Aid Advisor  
+
+## 📖 Overview  
+**LegiSense** is an **AI-powered legal assistance platform** that makes legal help more **accessible, affordable, and efficient**.  
+It combines **automation, AI, and law** into a single, easy-to-use application.  
+
 ![FAQ Animation](https://raw.githubusercontent.com/rahul15-manch/Legal-Aid-Chatbot/refs/heads/main/Yellow%20Green%20and%20Pink%20Colorful%20Faq%20Animated%20Social%20Media.gif)
 
 
@@ -35,12 +40,6 @@
 ![streamlit_mic_recorder](https://img.shields.io/badge/Streamlit%20Mic%20Recorder-FF4B4B?style=for-the-badge&logo=microphone&logoColor=white)
 
 
-
----
-
-## 📖 Overview  
-**LegiSense** is an **AI-powered legal assistance platform** that makes legal help more **accessible, affordable, and efficient**.  
-It combines **automation, AI, and law** into a single, easy-to-use application.  
 
 ---
 
