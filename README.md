@@ -88,9 +88,7 @@ LegiSense aims to bridge the gap between citizens and legal help by combining AI
 
 ## 🤝 Contributers
 ## 🌐 Connect with Me  and My team 
-
-## 🤝 Contributors  
-
+  
 Meet the amazing team behind **LegiSense** 🚀  
 
 | Name            | Role                          | LinkedIn |
