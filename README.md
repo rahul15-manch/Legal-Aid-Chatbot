@@ -39,8 +39,79 @@ It combines **automation, AI, and law** into a single, easy-to-use application.
 ![streamlit_option_menu](https://img.shields.io/badge/Streamlit%20Option%20Menu-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![streamlit_mic_recorder](https://img.shields.io/badge/Streamlit%20Mic%20Recorder-FF4B4B?style=for-the-badge&logo=microphone&logoColor=white)
 
+## Architecture
+```mermaid
+graph TD
 
+    A[Legal Assistant Application]
 
+    A --> B[data/]
+    A --> C[my_app/]
+    A --> D[scripts/]
+    A --> E[Core Files]
+
+    %% Scripts
+    D --> D1[ingest.py]
+    D --> D2[pdf_txt.py]
+
+    %% Core Application Files
+    E --> E1[app.py]
+    E --> E2[rag_core.py]
+    E --> E3[llm_providers.py]
+    E --> E4[prompts.py]
+    E --> E5[accuracy.py]
+    E --> E6[faq.py]
+    E --> E7[affidavit_template.py]
+
+    %% Database
+    E --> F[(lawyers.db)]
+
+    %% Testing
+    E --> G[Testing]
+    G --> G1[test_llm.py]
+    G --> G2[test_retrival.py]
+
+    %% Config
+    E --> H[requirements.txt]
+    E --> I[README.md]
+    E --> J[.gitignore]
+
+    %% Functional Flow
+    D1 --> K[Document Processing]
+    D2 --> K
+
+    K --> E2
+
+    E2 --> E3
+    E2 --> E4
+
+    E3 --> L[Hugging Face LLM]
+
+    E2 --> M[Legal Knowledge Retrieval]
+
+    M --> E1
+
+    E6 --> E1
+    E7 --> E1
+
+    F --> N[Lawyer Registration]
+    F --> O[Lawyer Search]
+
+    N --> E1
+    O --> E1
+
+    E5 --> P[Accuracy Evaluation]
+    P --> E3
+
+    %% UI
+    E1 --> Q[Streamlit / Web Interface]
+
+    Q --> R[FAQ Generation]
+    Q --> S[Affidavit Creation]
+    Q --> T[RTI Assistance]
+    Q --> U[Customer Dispute Support]
+    Q --> V[Lawyer Recommendation]
+```
 ---
 
 ## 🔑 Features  
