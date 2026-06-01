@@ -39,7 +39,7 @@ It combines **automation, AI, and law** into a single, easy-to-use application.
 ![streamlit_option_menu](https://img.shields.io/badge/Streamlit%20Option%20Menu-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![streamlit_mic_recorder](https://img.shields.io/badge/Streamlit%20Mic%20Recorder-FF4B4B?style=for-the-badge&logo=microphone&logoColor=white)
 
-## Architecture
+## 🔧 Architecture
 ```mermaid
 graph TD
 
